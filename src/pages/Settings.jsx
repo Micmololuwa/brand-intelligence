@@ -9,7 +9,7 @@ function Toggle({ on, onChange }) {
   )
 }
 
-const DEFAULT_KEYWORDS = ['BrandIntel', 'Brand Intel', 'brandintl', '@brandintelhq']
+const DEFAULT_KEYWORDS = ['Thelix Holdings', 'Excelmind', 'Creditveto', 'Vizacheck', 'Thelix', 'Lightforth']
 
 const DEFAULT_SOURCES = [
   { name: 'Twitter / X', desc: 'Real-time tweet tracking via X API', on: true },

@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Search, ExternalLink, Tag, UserPlus, ChevronDown, Filter, Zap } from 'lucide-react'
-import { mentions } from '../data/mockData'
+import { mentions, TRACKED_KEYWORDS } from '../data/mockData'
 import PlatformBadge from '../components/PlatformBadge'
 
 const PLATFORMS = ['All', 'Twitter', 'Reddit', 'LinkedIn', 'YouTube', 'Instagram', 'Web', 'TikTok']
 const SENTIMENTS = ['All', 'positive', 'negative', 'neutral']
+const KEYWORDS = ['All', ...TRACKED_KEYWORDS]
 
 function highlight(text, keyword) {
   if (!keyword) return text
@@ -83,13 +84,15 @@ export default function MentionFeed() {
   const [search, setSearch] = useState('')
   const [platform, setPlatform] = useState('All')
   const [sentiment, setSentiment] = useState('All')
+  const [keyword, setKeyword] = useState('All')
   const [dateRange, setDateRange] = useState('Today')
 
   const filtered = mentions.filter(m => {
     const matchPlatform = platform === 'All' || m.platform === platform
     const matchSentiment = sentiment === 'All' || m.sentiment === sentiment
+    const matchKeyword = keyword === 'All' || m.keyword === keyword
     const matchSearch = !search || m.text.toLowerCase().includes(search.toLowerCase()) || m.author.toLowerCase().includes(search.toLowerCase())
-    return matchPlatform && matchSentiment && matchSearch
+    return matchPlatform && matchSentiment && matchKeyword && matchSearch
   })
 
   const counts = {
@@ -103,7 +106,7 @@ export default function MentionFeed() {
       <div className="page-header">
         <div>
           <div className="page-title">Mention Feed</div>
-          <div className="page-sub">{filtered.length} mentions found · Showing results for "BrandIntel"</div>
+          <div className="page-sub">{filtered.length} mentions found · Tracking: Thelix Holdings, Excelmind, Creditveto, Vizacheck, Thelix, Lightforth</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-secondary">
@@ -154,8 +157,12 @@ export default function MentionFeed() {
           />
         </div>
 
+        <select className="filter-select" value={keyword} onChange={e => setKeyword(e.target.value)}>
+          {KEYWORDS.map(k => <option key={k}>{k === 'All' ? 'All Brands' : k}</option>)}
+        </select>
+
         <select className="filter-select" value={platform} onChange={e => setPlatform(e.target.value)}>
-          {PLATFORMS.map(p => <option key={p}>{p}</option>)}
+          {PLATFORMS.map(p => <option key={p}>{p === 'All' ? 'All Platforms' : p}</option>)}
         </select>
 
         <select className="filter-select" value={sentiment} onChange={e => setSentiment(e.target.value)}>

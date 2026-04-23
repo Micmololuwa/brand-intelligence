@@ -7,7 +7,7 @@ import {
   TrendingUp, TrendingDown, MessageSquare, Bell, FileText,
   ArrowUpRight, Eye, ExternalLink, AlertTriangle,
 } from 'lucide-react'
-import { mentions, dailyMentions, platformBreakdown, topSources, topContent, alertItems, weeklyTrend } from '../data/mockData'
+import { mentions, dailyMentions, platformBreakdown, topSources, topContent, alertItems, weeklyTrend, keywordBreakdown } from '../data/mockData'
 import PlatformBadge from '../components/PlatformBadge'
 
 function StatCard({ label, value, change, up, icon: Icon, iconColor, iconBg }) {
@@ -264,26 +264,49 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Weekly trend */}
-      <div className="card">
-        <div className="card-header">
-          <div>
-            <div className="card-title">Monthly Mention Trend</div>
-            <div className="card-sub">Week-over-week growth in April</div>
+      {/* Brand keyword breakdown + weekly trend */}
+      <div className="two-col">
+        <div className="card">
+          <div className="card-header">
+            <div>
+              <div className="card-title">Mentions by Brand</div>
+              <div className="card-sub">All 6 tracked keywords this week</div>
+            </div>
           </div>
-          <span style={{ fontSize: 12, color: 'var(--color-success)', fontWeight: 600, background: 'var(--color-success-dim)', padding: '3px 10px', borderRadius: 20 }}>
-            +130% MTD
-          </span>
+          {keywordBreakdown.map(k => (
+            <div key={k.keyword} className="progress-row">
+              <div className="progress-label" style={{ width: 130, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: k.color, flexShrink: 0 }} />
+                <span style={{ fontSize: 12 }}>{k.keyword}</span>
+              </div>
+              <div className="progress-track">
+                <div className="progress-fill" style={{ width: `${Math.round((k.mentions / 203) * 100)}%`, background: k.color }} />
+              </div>
+              <div className="progress-pct" style={{ width: 40 }}>{k.mentions}</div>
+            </div>
+          ))}
         </div>
-        <ResponsiveContainer width="100%" height={120}>
-          <BarChart data={weeklyTrend} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
-            <XAxis dataKey="week" tick={{ fontSize: 11, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 11, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="mentions" name="Mentions" fill="var(--color-accent)" radius={[4, 4, 0, 0]} maxBarSize={60} />
-          </BarChart>
-        </ResponsiveContainer>
+
+        <div className="card">
+          <div className="card-header">
+            <div>
+              <div className="card-title">Monthly Mention Trend</div>
+              <div className="card-sub">Week-over-week growth in April</div>
+            </div>
+            <span style={{ fontSize: 12, color: 'var(--color-success)', fontWeight: 600, background: 'var(--color-success-dim)', padding: '3px 10px', borderRadius: 20 }}>
+              +147% MTD
+            </span>
+          </div>
+          <ResponsiveContainer width="100%" height={150}>
+            <BarChart data={weeklyTrend} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
+              <XAxis dataKey="week" tick={{ fontSize: 11, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: 'var(--color-text-muted)' }} axisLine={false} tickLine={false} />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="mentions" name="Mentions" fill="var(--color-accent)" radius={[4, 4, 0, 0]} maxBarSize={60} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   )
